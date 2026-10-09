@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Mostafa Abotaha</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --bg:          #080706;
+    --bg-surface:  #110f0d;
+    --frame-outer: #171512;
+    --frame-inner: #0d0c0a;
+    --ink:         #f3eee4;
+    --muted:       #8e8473;
+    --accent:      #c1272d;
+    --accent-glow: rgba(193, 39, 45, 0.3);
+    --line:        rgba(243,238,228,0.08);
+    --gold-rim:    rgba(193,39,45,0.4);
+    --font-display-en: 'Cormorant Garamond', serif;
+    --font-body-en:    'Inter', sans-serif;
+    --font-display-ar: 'Amiri', serif;
+    --font-body-ar:    'Tajawal', sans-serif;
+    --max-width: 1200px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body-en); font-weight:300; line-height:1.75; overflow-x:hidden;}
+  body.ar{font-family:var(--font-body-ar);}
+  h1,h2,h3{font-family:var(--font-display-en); font-weight:500; color:var(--ink);}
+  body.ar h1, body.ar h2, body.ar h3{font-family:var(--font-display-ar); font-weight:700;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--max-width); margin:0 auto; padding:0 28px;}
+  section{padding:60px 0 100px;}
+
+  /* Cursor */
+  .cursor-dot{position:fixed; top:0; left:0; width:6px; height:6px; border-radius:50%; background:var(--accent); pointer-events:none; z-index:100001; transform:translate(-50%,-50%);}
+  .cursor-ring{position:fixed; top:0; left:0; width:34px; height:34px; border-radius:50%; border:1px solid rgba(193,39,45,0.6); pointer-events:none; z-index:100000; transform:translate(-50%,-50%); transition:width .2s ease, height .2s ease, background-color .2s ease;}
+  .cursor-ring.hover{width:56px; height:56px; background:rgba(193,39,45,0.18); border-color:var(--accent);}
+  @media (pointer:fine){ body,a,button{cursor:none;} }
+  @media (pointer:coarse){ .cursor-dot,.cursor-ring{display:none !important;} }
+
+  nav{position:sticky; top:0; z-index:60; background:rgba(8,7,6,0.9); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:80px;}
+  .brand{font-family:var(--font-display-en); font-style:italic; font-size:23px; letter-spacing:0.02em; color:var(--accent); transition:opacity .2s;}
+  .brand:hover{opacity:0.85;}
+  body.ar .brand{font-family:var(--font-display-ar); font-style:normal;}
+  .navlinks{display:flex; gap:36px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);}
+  body.ar .navlinks{text-transform:none; letter-spacing:0;}
+  .navlinks a{transition:color .25s;}
+  .navlinks a:hover, .navlinks a.current{color:var(--accent);}
+  .navright{display:flex; align-items:center; gap:18px;}
+  .langtoggle{display:flex; border:1px solid var(--line); font-size:12px; border-radius:2px; overflow:hidden;}
+  .langtoggle button{padding:6px 14px; background:transparent; border:none; color:var(--muted); cursor:pointer; transition:all .2s;}
+  .langtoggle button.active{background:var(--accent); color:#fff;}
+  .navtoggle{display:none; font-size:22px; background:none; border:none; color:var(--ink); cursor:pointer;}
+  @media (max-width:820px){
+    .navlinks{position:fixed; top:80px; left:0; right:0; background:var(--bg); flex-direction:column; padding:26px 28px; gap:20px; display:none; border-bottom:1px solid var(--line);}
+    .navlinks.open{display:flex;}
+    .navtoggle{display:block;}
+  }
+
+  .page-head{padding:50px 0 10px; text-align:center;}
+  .sec-index{display:inline-block; font-size:11px; letter-spacing:0.25em; color:var(--accent); text-transform:uppercase; margin-bottom:10px; font-weight:600;}
+  body.ar .sec-index{text-transform:none; letter-spacing:0;}
+  .page-head h1{font-size:clamp(32px,5vw,54px); font-weight:500; letter-spacing:-0.01em;}
+  .page-sub{color:var(--muted); margin-top:14px; font-family:var(--font-display-en); font-style:italic; font-size:18px; max-width:620px; margin-left:auto; margin-right:auto;}
+  body.ar .page-sub{font-family:var(--font-body-ar); font-style:normal; font-size:15px;}
+
+  /* Grid */
+  .framed-gallery-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 45px;
+  }
+
+  .art-frame{
+    position:relative;
+    background: var(--frame-outer);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1), border-color .35s ease, box-shadow .35s ease;
+  }
+  .art-frame:hover{
+    transform: translateY(-5px);
+    border-color: var(--gold-rim);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.85), 0 0 20px rgba(193,39,45,0.22);
+  }
+
+  .frame-canvas{
+    position:relative;
+    width: 100%;
+    height: 250px;
+    background: var(--frame-inner);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 8px;
+  }
+
+  .frame-canvas img{
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    opacity: 0;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
+    transition: opacity .4s ease, transform .4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+  .art-frame.ready .frame-canvas img{
+    opacity: 1;
+  }
+  .art-frame:hover .frame-canvas img{
+    transform: scale(1.04);
+  }
+
+  .back-to-top{
+    position:fixed; bottom:36px; right:36px; z-index:90;
+    width:50px; height:50px; border-radius:50%;
+    background:rgba(23, 21, 18, 0.88); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; opacity:0; visibility:hidden;
+    backdrop-filter:blur(8px); transform:translateY(16px);
+    transition:all .3s cubic-bezier(0.16, 1, 0.3, 1);
+    padding:0; overflow:hidden;
+  }
+  body.ar .back-to-top{ right:auto; left:36px; }
+  .back-to-top.show{ opacity:1; visibility:visible; transform:translateY(0); }
+  .back-to-top img{ width:100%; height:100%; object-fit:cover; border-radius:50%; pointer-events:none; transition:transform .25s ease; display:block; }
+  .back-to-top:hover{ border-color:var(--accent); transform:translateY(-4px); box-shadow:0 8px 25px var(--accent-glow); }
+  .back-to-top:hover img{ transform:scale(1.08); }
+
+  /* Lightbox */
+  .gallery-lightbox{
+    position:fixed; inset:0; z-index:99999; background:rgba(6,5,4,0.96);
+    backdrop-filter:blur(18px); display:none; align-items:center; justify-content:center;
+    opacity:0; transition:opacity .3s ease; user-select:none;
+  }
+  .gallery-lightbox.open{ display:flex; opacity:1; }
+  .lightbox-content-wrapper{
+    position:relative; max-width:92vw; max-height:86vh; display:flex;
+    align-items:center; justify-content:center;
+  }
+  .lightbox-img{
+    max-width:88vw; max-height:82vh; object-fit:contain; border-radius:3px;
+    border:1px solid var(--line); box-shadow:0 30px 80px rgba(0,0,0,0.95);
+    transform:scale(0.96); transition:transform .3s ease;
+  }
+  .gallery-lightbox.open .lightbox-img{ transform:scale(1); }
+
+  .lightbox-counter{
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+    font-size:12px; letter-spacing:0.18em; color:var(--ink);
+    background:rgba(17,15,13,0.75); border:1px solid var(--line); padding:6px 18px; border-radius:20px;
+    backdrop-filter:blur(8px);
+  }
+
+  .lightbox-close{
+    position:fixed; top:28px; right:28px; z-index:100000;
+    width:46px; height:46px; border-radius:50%; background:rgba(17,15,13,0.85);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all .25s ease; padding:0; overflow:hidden;
+  }
+  body.ar .lightbox-close{ right:auto; left:28px; }
+  .lightbox-close img{ width:100%; height:100%; object-fit:cover; border-radius:50%; pointer-events:none; transition:transform .25s ease; display:block; }
+  .lightbox-close:hover{ border-color:var(--accent); transform:scale(1.08); box-shadow:0 4px 18px var(--accent-glow); }
+
+  .lightbox-arrow{
+    position:fixed; top:50%; transform:translateY(-50%); z-index:100000;
+    width:54px; height:54px; border-radius:50%; background:rgba(17,15,13,0.85);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all .25s ease; padding:0; overflow:hidden;
+  }
+  .lightbox-arrow img{ width:100%; height:100%; object-fit:cover; border-radius:50%; pointer-events:none; transition:transform .25s ease; display:block; }
+  .lightbox-arrow:hover{ border-color:var(--accent); transform:translateY(-50%) scale(1.1); box-shadow:0 6px 20px var(--accent-glow); }
+  .lightbox-prev{ left:28px; }
+  .lightbox-next{ right:28px; }
+  body.ar .lightbox-prev{ left:auto; right:28px; }
+  body.ar .lightbox-next{ right:auto; left:28px; }
+  @media (max-width:768px){
+    .framed-gallery-grid{ grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+    .frame-canvas{ height: 180px; padding: 6px; }
+    .lightbox-arrow{ width:44px; height:44px; }
+    .lightbox-prev{ left:12px; }
+    .lightbox-next{ right:12px; }
+    body.ar .lightbox-prev{ right:12px; left:auto; }
+    body.ar .lightbox-next{ left:12px; right:auto; }
+    .lightbox-close{ top:16px; right:16px; width:40px; height:40px; }
+    body.ar .lightbox-close{ left:16px; right:auto; }
+  }
+
+  .back-link{display:flex; justify-content:center; margin-top:60px;}
+  footer{text-align:center; padding:38px 0; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:15px 32px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--accent); transition:all .25s;}
+  body.ar .btn{text-transform:none; letter-spacing:0;}
+  .btn-outline{color:var(--ink); border-color:var(--line); background:transparent;}
+  .btn-outline:hover{border-color:var(--accent); color:var(--accent); background:rgba(193,39,45,0.05);}
+</style>
+</head>
+<body id="top">
+
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to Top" title="Back to Top">
+  <img src="back to top.png" alt="Back to Top" width="50" height="50" decoding="async">
+</button>
+
+<div class="gallery-lightbox" id="galleryLightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close" title="Close">
+    <img src="exit.png" alt="Close" width="46" height="46" decoding="async">
+  </button>
+  <button class="lightbox-arrow lightbox-prev" id="lightboxPrev" aria-label="Previous Image" title="Previous Image">
+    <img src="previous.png" alt="Previous" width="56" height="56" decoding="async">
+  </button>
+  <button class="lightbox-arrow lightbox-next" id="lightboxNext" aria-label="Next Image" title="Next Image">
+    <img src="next.png" alt="Next" width="56" height="56" decoding="async">
+  </button>
+  <div class="lightbox-content-wrapper">
+    <img src="" alt="Expanded Preview" class="lightbox-img" id="lightboxImg" decoding="async">
+  </div>
+  <div class="lightbox-counter" id="lightboxCounter">00 / 00</div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="brand">Mostafa Abotaha</a>
+    <div class="navlinks" id="navlinks">
+      <a href="index.html#about" data-en="Biography" data-ar="نبذة">Biography</a>
+      <a href="index.html#work" data-en="Selected Work" data-ar="الأعمال">Selected Work</a>
+      <a href="gallery.html" class="current" data-en="Gallery" data-ar="الصور">Gallery</a>
+      <a href="index.html#contact" data-en="Contact" data-ar="تواصل معايا">Contact</a>
+    </div>
+    <div class="navright">
+      <div class="langtoggle">
+        <button id="btnEn" class="active">EN</button>
+        <button id="btnAr">ع</button>
+      </div>
+      <button class="navtoggle" id="navtoggle"><i class="ti ti-menu-2"></i></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="sec-index" data-en="Portraits & Stills" data-ar="صور ولقطات">Portraits & Stills</span>
+    <h1 data-en="Photo Gallery" data-ar="معرض الصور">Photo Gallery</h1>
+    <p class="page-sub" data-en="A collection of on-set moments, headshots, and cinematic captures." data-ar="مجموعة من اللقطات السينمائية، الصور الرسمية، وخلف الكواليس.">A collection of on-set moments, headshots, and cinematic captures.</p>
+  </div>
+</section>
+
+<section style="padding-top: 0;">
+  <div class="wrap">
+    <!-- الشبكة ديناميكية بالكامل وتستقبل الصور من السيرفر -->
+    <div class="framed-gallery-grid" id="galleryGrid">
+      <p id="loadingMsg" style="color: var(--muted); text-align: center; grid-column: 1/-1; padding: 40px 0;">جاري تحميل المعرض...</p>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html" class="btn btn-outline"><i class="ti ti-arrow-left"></i> <span data-en="Back to home" data-ar="العودة للرئيسية">Back to home</span></a>
+    </div>
+  </div>
+</section>
+
+<footer data-en="© 2026 Mostafa Abotaha — All rights reserved" data-ar="© 2026 مصطفى ابوطه — جميع الحقوق محفوظة">© 2026 Mostafa Abotaha — All rights reserved</footer>
+
+<script>
+  var htmlRoot = document.getElementById('htmlRoot');
+  var body = document.body;
+  var currentLang = localStorage.getItem('site_lang') || 'en';
+
+  function setLang(lang){
+    currentLang = lang;
+    localStorage.setItem('site_lang', lang);
+    var allI18nEls = document.querySelectorAll('[data-en]');
+    allI18nEls.forEach(function(el){ el.textContent = el.getAttribute('data-' + lang); });
+
+    if(lang === 'ar'){
+      htmlRoot.setAttribute('lang','ar'); htmlRoot.setAttribute('dir','rtl'); body.classList.add('ar');
+      document.getElementById('btnAr').classList.add('active'); document.getElementById('btnEn').classList.remove('active');
+    } else {
+      htmlRoot.setAttribute('lang','en'); htmlRoot.setAttribute('dir','ltr'); body.classList.remove('ar');
+      document.getElementById('btnEn').classList.add('active'); document.getElementById('btnAr').classList.remove('active');
+    }
+  }
+
+  setLang(currentLang);
+  document.getElementById('btnEn').addEventListener('click', function(){ setLang('en'); });
+  document.getElementById('btnAr').addEventListener('click', function(){ setLang('ar'); });
+  
+  document.getElementById('navtoggle').addEventListener('click', function(){ document.getElementById('navlinks').classList.toggle('open'); });
+  document.querySelectorAll('.navlinks a').forEach(function(a){ a.addEventListener('click', function(){ document.getElementById('navlinks').classList.remove('open'); }); });
+
+  var dot = document.getElementById('cursorDot');
+  var ring = document.getElementById('cursorRing');
+  var ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
+
+  document.addEventListener('mousemove', function(e){
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px, 0) translate(-50%,-50%)';
+  }, { passive: true });
+
+  (function animateRing(){
+    ringX += (mouseX - ringX) * 0.2; ringY += (mouseY - ringY) * 0.2;
+    ring.style.transform = 'translate3d(' + ringX + 'px,' + ringY + 'px, 0) translate(-50%,-50%)';
+    requestAnimationFrame(animateRing);
+  })();
+
+  function bindHover(elements){
+    elements.forEach(function(el){
+      el.addEventListener('mouseenter', function(){ ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', function(){ ring.classList.remove('hover'); });
+    });
+  }
+  bindHover(document.querySelectorAll('a, button, #backToTop, .lightbox-arrow, .lightbox-close'));
+
+  var backToTopBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 380){ backToTopBtn.classList.add('show'); } else { backToTopBtn.classList.remove('show'); }
+  }, { passive: true });
+  backToTopBtn.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  /* نظام الـ Lightbox */
+  var artFrames = [];
+  var lightbox = document.getElementById('galleryLightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  var lightboxClose = document.getElementById('lightboxClose');
+  var lightboxPrev = document.getElementById('lightboxPrev');
+  var lightboxNext = document.getElementById('lightboxNext');
+  var lightboxCounter = document.getElementById('lightboxCounter');
+  var currentImgIndex = 0;
+  var isLightboxOpen = false;
+
+  function updateCounter(){
+    if(artFrames.length === 0) {
+      lightboxCounter.textContent = "00 / 00";
+      return;
+    }
+    var padIndex = String(currentImgIndex + 1).padStart(2, '0');
+    var padTotal = String(artFrames.length).padStart(2, '0');
+    lightboxCounter.textContent = padIndex + ' / ' + padTotal;
+  }
+
+  function showImage(index){
+    if(artFrames.length === 0) return;
+    if(index < 0) index = artFrames.length - 1;
+    if(index >= artFrames.length) index = 0;
+    currentImgIndex = index;
+    var targetImg = artFrames[currentImgIndex].querySelector('img');
+    lightboxImg.src = targetImg.src;
+    updateCounter();
+  }
+
+  function openLightbox(index){
+    showImage(index);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    isLightboxOpen = true;
+  }
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    isLightboxOpen = false;
+  }
+
+  lightboxPrev.addEventListener('click', function(e){ e.stopPropagation(); showImage(currentImgIndex - 1); });
+  lightboxNext.addEventListener('click', function(e){ e.stopPropagation(); showImage(currentImgIndex + 1); });
+  lightboxClose.addEventListener('click', function(e){ e.stopPropagation(); closeLightbox(); });
+
+  lightbox.addEventListener('click', function(e){
+    if(e.target === lightbox || e.target.classList.contains('lightbox-content-wrapper')) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(!isLightboxOpen) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowLeft') {
+      var isRTL = (currentLang === 'ar');
+      showImage(isRTL ? currentImgIndex + 1 : currentImgIndex - 1);
+    }
+    if(e.key === 'ArrowRight') {
+      var isRTL = (currentLang === 'ar');
+      showImage(isRTL ? currentImgIndex - 1 : currentImgIndex + 1);
+    }
+  });
+
+  window.refreshFramesBinding = function(){
+    artFrames = Array.from(document.querySelectorAll('.art-frame'));
+    artFrames.forEach(function(frame, idx){
+      frame.onclick = function(){ openLightbox(idx); };
+    });
+    bindHover(artFrames);
+    updateCounter();
+  };
+</script>
+
+<!-- Firebase Live Sync -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAxSjID34JTEwqG9dE0PEkR3uRZ3RIFg3I",
+    authDomain: "mysite-news.firebaseapp.com",
+    projectId: "mysite-news",
+    storageBucket: "mysite-news.firebasestorage.app",
+    messagingSenderId: "640458506844",
+    appId: "1:640458506844:web:bb997e3d223aa539235c99",
+    measurementId: "G-48FQQPSE08"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const galleryGrid = document.getElementById('galleryGrid');
+
+  const q = query(collection(db, "site_photos"), where("target", "==", "main"));
+
+  onSnapshot(q, (snapshot) => {
+    galleryGrid.innerHTML = '';
+    
+    if (snapshot.empty) {
+      galleryGrid.innerHTML = '<p style="color: var(--muted); text-align: center; grid-column: 1/-1; padding: 40px 0;">لا توجد صور منشورة حالياً في المعرض.</p>';
+      window.refreshFramesBinding();
+      return;
+    }
+
+    const docs = [];
+    snapshot.forEach(docSnap => {
+      docs.push({ id: docSnap.id, ...docSnap.data() });
+    });
+
+    // ترتيب الصور بالأحدث في المقدمة
+    docs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    docs.forEach(item => {
+      const frame = document.createElement('div');
+      frame.className = 'art-frame ready';
+      frame.setAttribute('data-doc-id', item.id);
+      frame.innerHTML = `
+        <div class="frame-canvas">
+          <img src="${item.url}" alt="${item.title || 'Photo'}" loading="lazy">
+        </div>
+      `;
+      galleryGrid.appendChild(frame);
+    });
+
+    window.refreshFramesBinding();
+  });
+</script>
+
+</body>
+</html>

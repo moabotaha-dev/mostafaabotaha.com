@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awards & Nominations — Mostafa Abotaha</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --bg:        #0c0b0a;
+    --bg-2:      #16140f;
+    --ink:       #f2ede2;
+    --muted:     #a49a86;
+    --accent:    #c1272d;
+    --line:      rgba(242,237,226,0.12);
+    --card:      #17150f;
+    --font-display-en: 'Cormorant Garamond', serif;
+    --font-body-en:    'Inter', sans-serif;
+    --font-display-ar: 'Amiri', serif;
+    --font-body-ar:    'Tajawal', sans-serif;
+    --max-width: 1120px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body-en); font-weight:300; line-height:1.8;}
+  body.ar{font-family:var(--font-body-ar);}
+  h1,h2,h3{font-family:var(--font-display-en); font-weight:500; color:var(--ink);}
+  body.ar h1, body.ar h2, body.ar h3{font-family:var(--font-display-ar); font-weight:700;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--max-width); margin:0 auto; padding:0 28px;}
+  section{padding:90px 0 120px;}
+
+  .cursor-dot{position:fixed; top:0; left:0; width:7px; height:7px; border-radius:50%; background:var(--accent); pointer-events:none; z-index:2100; transform:translate(-50%,-50%);}
+  .cursor-ring{position:fixed; top:0; left:0; width:34px; height:34px; border-radius:50%; border:1px solid var(--accent); pointer-events:none; z-index:2099; transform:translate(-50%,-50%); transition:width .2s, height .2s, background-color .2s;}
+  .cursor-ring.hover{width:58px; height:58px; background:rgba(201,162,74,0.1);}
+  @media (pointer:fine){ body,a,button{cursor:none;} }
+  @media (pointer:coarse){ .cursor-dot,.cursor-ring{display:none !important;} }
+
+  nav{position:sticky; top:0; z-index:60; background:rgba(12,11,10,0.9); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:84px;}
+  .brand{font-family:var(--font-display-en); font-style:italic; font-size:22px; letter-spacing:0.02em; color:var(--accent);}
+  body.ar .brand{font-family:var(--font-display-ar); font-style:normal;}
+  .navlinks{display:flex; gap:38px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);}
+  body.ar .navlinks{text-transform:none; letter-spacing:0;}
+  .navlinks a:hover{color:var(--accent);}
+  .navlinks a.current{color:var(--accent);}
+  .navright{display:flex; align-items:center; gap:20px;}
+  .langtoggle{display:flex; border:1px solid var(--line); font-size:12px;}
+  .langtoggle button{padding:8px 14px; background:transparent; border:none; color:var(--muted); cursor:pointer;}
+  .langtoggle button.active{background:var(--accent); color:#fff;}
+  .navtoggle{display:none; font-size:22px; background:none; border:none; color:var(--ink); cursor:pointer;}
+  @media (max-width:820px){
+    .navlinks{position:fixed; top:84px; left:0; right:0; background:var(--bg); flex-direction:column; padding:26px 28px; gap:22px; display:none; border-bottom:1px solid var(--line);}
+    .navlinks.open{display:flex;}
+    .navtoggle{display:block;}
+  }
+
+  .page-head{padding:70px 0 20px; text-align:center;}
+  .sec-index{font-size:13px; letter-spacing:0.2em; color:var(--accent); text-transform:uppercase;}
+  body.ar .sec-index{text-transform:none;}
+  .page-head h1{font-size:clamp(40px,6vw,68px); margin-top:16px;}
+  .page-sub{color:var(--muted); margin-top:14px; font-family:var(--font-display-en); font-style:italic; font-size:17px;}
+  body.ar .page-sub{font-family:var(--font-body-ar); font-style:normal; font-size:15px;}
+
+  .award-row{display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:26px; padding:26px 0; border-bottom:1px solid var(--line); transition:background-color .2s;}
+  .award-row:first-of-type{border-top:1px solid var(--line);}
+  .award-row:hover{background:var(--bg-2);}
+  .award-year{font-size:14px; color:var(--muted);}
+  .award-title{font-family:var(--font-display-en); font-size:24px;}
+  body.ar .award-title{font-family:var(--font-display-ar);}
+  .award-desc{font-size:14px; color:var(--muted); margin-top:4px;}
+  .award-badge{font-size:11px; padding:6px 16px; border:1px solid var(--accent); color:var(--accent); letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap;}
+  body.ar .award-badge{text-transform:none;}
+  @media (max-width:700px){ .award-row{grid-template-columns:1fr; gap:6px;} }
+
+  .back-link{display:flex; justify-content:center; margin-top:60px;}
+  footer{text-align:center; padding:36px 0; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:15px 32px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--accent); transition:all .25s;}
+  body.ar .btn{text-transform:none; letter-spacing:0;}
+  .btn-outline{color:var(--ink); border-color:var(--line);}
+  .btn-outline:hover{border-color:var(--accent); color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="brand">Mostafa Abotaha</a>
+    <div class="navlinks" id="navlinks">
+      <a href="index.html#about" data-en="Biography" data-ar="نبذة">Biography</a>
+      <a href="index.html#work" data-en="Selected Work" data-ar="الأعمال">Selected Work</a>
+      <a href="awards.html" class="current" data-en="Awards" data-ar="الجوائز">Awards</a>
+      <a href="index.html#contact" data-en="Contact" data-ar="تواصل معايا">Contact</a>
+    </div>
+    <div class="navright">
+      <div class="langtoggle">
+        <button id="btnEn" class="active">EN</button>
+        <button id="btnAr">ع</button>
+      </div>
+      <button class="navtoggle" id="navtoggle"><i class="ti ti-menu-2"></i></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="sec-index" data-en="Honors & Recognition" data-ar="تكريمات وترشيحات">Honors & Recognition</span>
+    <h1 data-en="Awards & Honors" data-ar="الجوائز والتكريمات">Awards & Honors</h1>
+    <p class="page-sub" data-en="Awards, festival selections, and official honors received throughout the career." data-ar="الجوائز والمشاركات في المهرجانات والتكريمات الرسمية.">Awards, festival selections, and official honors received throughout the career.</p>
+  </div>
+</section>
+
+<section style="padding-top: 0;">
+  <div class="wrap">
+    <div id="awardsList">
+      <!-- Award 1 -->
+      <div class="award-row">
+        <span class="award-year">2024</span>
+        <div>
+          <div class="award-title" data-en="Shield of Excellence" data-ar="درع التميز">Shield of Excellence</div>
+          <div class="award-desc" data-en="Mentality Acting Workshop · Cairo" data-ar="ورشة Mentality للتمثيل · القاهرة">Mentality Acting Workshop · Cairo</div>
+        </div>
+        <span class="award-badge" data-en="Winner" data-ar="فائز">Winner</span>
+      </div>
+
+      <!-- Award 2 -->
+      <div class="award-row">
+        <span class="award-year">2025</span>
+        <div>
+          <div class="award-title" data-en="Honored by the Cultural Counselor of the Embassy of Cameroon in Cairo" data-ar="التكريم من قبل المستشار الثقافي لسفارة الكاميرون في القاهرة">Honored by the Cultural Counselor of the Embassy of Cameroon in Cairo</div>
+          <div class="award-desc" data-en="Short Film | Disconnected" data-ar="الفيلم القصير | غير متصل">Short Film | Disconnected</div>
+        </div>
+        <span class="award-badge" data-en="Honored" data-ar="تكريم">Honored</span>
+      </div>
+
+      <!-- Award 3 -->
+      <div class="award-row">
+        <span class="award-year">2025</span>
+        <div>
+          <div class="award-title" data-en="Special Jury | Egyptian American Film Festival" data-ar="لجنة التحكيم الخاصة | المهرجان المصري الامريكي للسينما والفنون">Special Jury | Egyptian American Film Festival</div>
+          <div class="award-desc" data-en="Short Film | Disconnected" data-ar="الفيلم القصير | غير متصل">Short Film | Disconnected</div>
+        </div>
+        <span class="award-badge" data-en="Winner" data-ar="فائز">Winner</span>
+      </div>
+
+      <!-- Award 4 -->
+      <div class="award-row">
+        <span class="award-year">2026</span>
+        <div>
+          <div class="award-title" data-en="Lift-Off Global Network" data-ar="Lift-Off Global Network">Lift-Off Global Network</div>
+          <div class="award-desc" data-en="Short Film | 7 Minutes" data-ar="الفيلم القصير | ٧ دقايق">Short Film | 7 Minutes</div>
+        </div>
+        <span class="award-badge" data-en="Official Selection" data-ar="مشاركة رسمية">Official Selection</span>
+      </div>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html" class="btn btn-outline"><i class="ti ti-arrow-left"></i> <span data-en="Back to home" data-ar="العودة للرئيسية">Back to home</span></a>
+    </div>
+  </div>
+</section>
+
+<footer data-en="© 2026 Mostafa Abotaha — All rights reserved" data-ar="© 2026 مصطفى ابوطه — جميع الحقوق محفوظة">© 2026 Mostafa Abotaha — All rights reserved</footer>
+
+<script>
+  var htmlRoot = document.getElementById('htmlRoot');
+  var body = document.body;
+  var currentLang = localStorage.getItem('site_lang') || 'en';
+
+  function setLang(lang){
+    currentLang = lang;
+    localStorage.setItem('site_lang', lang);
+    var allI18n = document.querySelectorAll('[data-en]');
+    allI18n.forEach(function(el){ 
+      var val = el.getAttribute('data-' + lang);
+      if(val) el.textContent = val;
+    });
+    if(lang === 'ar'){
+      htmlRoot.setAttribute('lang','ar'); htmlRoot.setAttribute('dir','rtl'); body.classList.add('ar');
+      document.getElementById('btnAr').classList.add('active'); document.getElementById('btnEn').classList.remove('active');
+    } else {
+      htmlRoot.setAttribute('lang','en'); htmlRoot.setAttribute('dir','ltr'); body.classList.remove('ar');
+      document.getElementById('btnEn').classList.add('active'); document.getElementById('btnAr').classList.remove('active');
+    }
+  }
+
+  setLang(currentLang);
+
+  document.getElementById('btnEn').addEventListener('click', function(){ setLang('en'); });
+  document.getElementById('btnAr').addEventListener('click', function(){ setLang('ar'); });
+  document.getElementById('navtoggle').addEventListener('click', function(){ document.getElementById('navlinks').classList.toggle('open'); });
+  document.querySelectorAll('.navlinks a').forEach(function(a){ a.addEventListener('click', function(){ document.getElementById('navlinks').classList.remove('open'); }); });
+
+  var dot = document.getElementById('cursorDot');
+  var ring = document.getElementById('cursorRing');
+  var ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', function(e){
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px) translate(-50%,-50%)';
+  });
+  (function animateRing(){
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    ring.style.transform = 'translate(' + ringX + 'px,' + ringY + 'px) translate(-50%,-50%)';
+    requestAnimationFrame(animateRing);
+  })();
+  document.querySelectorAll('a, button').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ ring.classList.add('hover'); });
+    el.addEventListener('mouseleave', function(){ ring.classList.remove('hover'); });
+  });
+</script>
+
+<!-- ربط Firebase لجلب الجوائز المحدثة في الوقت الفعلي -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAxSjID34JTEwqG9dE0PEkR3uRZ3RIFg3I",
+    authDomain: "mysite-news.firebaseapp.com",
+    projectId: "mysite-news",
+    storageBucket: "mysite-news.firebasestorage.app",
+    messagingSenderId: "640458506844",
+    appId: "1:640458506844:web:bb997e3d223aa539235c99",
+    measurementId: "G-48FQQPSE08"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function loadAwardsFromFirebase() {
+    try {
+      const q = query(collection(db, "awards"), orderBy("year", "desc"));
+      const snapshot = await getDocs(q);
+      
+      if (!snapshot.empty) {
+        const awardsList = document.getElementById("awardsList");
+        awardsList.innerHTML = "";
+
+        snapshot.forEach((docItem) => {
+          const a = docItem.data();
+          const row = document.createElement("div");
+          row.className = "award-row";
+          row.innerHTML = `
+            <span class="award-year">${a.year}</span>
+            <div>
+              <div class="award-title" data-en="${a.titleEn}" data-ar="${a.titleAr}">${a.titleEn}</div>
+              <div class="award-desc" data-en="${a.descEn}" data-ar="${a.descAr}">${a.descEn}</div>
+            </div>
+            <span class="award-badge" data-en="${a.badgeEn}" data-ar="${a.badgeAr}">${a.badgeEn}</span>
+          `;
+          awardsList.appendChild(row);
+        });
+
+        // مزامنة اللغة المحددة حالياً (عربي / إنجليزي) فور تحميل البيانات
+        setLang(localStorage.getItem('site_lang') || 'en');
+      }
+    } catch (e) {
+      console.log("استخدام البيانات المسجلة مسبقاً كنسخة احتياطية:", e);
+    }
+  }
+
+  loadAwardsFromFirebase();
+</script>
+
+</body>
+</html>

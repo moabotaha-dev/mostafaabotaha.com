@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Works — Mostafa Abotaha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --bg:        #0c0b0a;
+    --bg-2:      #16140f;
+    --ink:       #f2ede2;
+    --muted:     #a49a86;
+    --accent:    #c1272d;
+    --line:      rgba(242,237,226,0.12);
+    --card:      #17150f;
+    --font-display-en: 'Cormorant Garamond', serif;
+    --font-body-en:    'Inter', sans-serif;
+    --font-display-ar: 'Amiri', serif;
+    --font-body-ar:    'Tajawal', sans-serif;
+    --max-width: 1120px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--font-body-en); font-weight:300; line-height:1.8;}
+  body.ar{font-family:var(--font-body-ar);}
+  h1,h2,h3{font-family:var(--font-display-en); font-weight:500; color:var(--ink);}
+  body.ar h1, body.ar h2, body.ar h3{font-family:var(--font-display-ar); font-weight:700;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--max-width); margin:0 auto; padding:0 28px;}
+  section{padding:90px 0 120px;}
+
+  .cursor-dot{position:fixed; top:0; left:0; width:7px; height:7px; border-radius:50%; background:var(--accent); pointer-events:none; z-index:2100; transform:translate(-50%,-50%);}
+  .cursor-ring{position:fixed; top:0; left:0; width:34px; height:34px; border-radius:50%; border:1px solid var(--accent); pointer-events:none; z-index:2099; transform:translate(-50%,-50%); transition:width .2s, height .2s, background-color .2s;}
+  .cursor-ring.hover{width:58px; height:58px; background:rgba(201,162,74,0.1);}
+  @media (pointer:fine){ body,a,button{cursor:none;} }
+  @media (pointer:coarse){ .cursor-dot,.cursor-ring,.preview-box{display:none !important;} }
+
+  .preview-box{
+    position:fixed; top:0; left:0; z-index:2098; width:260px; height:170px;
+    background:var(--card); border:1px solid var(--accent); pointer-events:none;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    opacity:0; transition:opacity .18s ease; overflow:hidden;
+  }
+  .preview-box img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .preview-box.show{opacity:1;}
+
+  nav{position:sticky; top:0; z-index:60; background:rgba(12,11,10,0.9); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:84px;}
+  .brand{font-family:var(--font-display-en); font-style:italic; font-size:22px; letter-spacing:0.02em; color:var(--accent);}
+  body.ar .brand{font-family:var(--font-display-ar); font-style:normal;}
+  .navlinks{display:flex; gap:38px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);}
+  body.ar .navlinks{text-transform:none; letter-spacing:0;}
+  .navlinks a:hover{color:var(--accent);}
+  .navlinks a.current{color:var(--accent);}
+  .navright{display:flex; align-items:center; gap:20px;}
+  .langtoggle{display:flex; border:1px solid var(--line); font-size:12px;}
+  .langtoggle button{padding:8px 14px; background:transparent; border:none; color:var(--muted); cursor:pointer;}
+  .langtoggle button.active{background:var(--accent); color:#fff;}
+  .navtoggle{display:none; font-size:22px; background:none; border:none; color:var(--ink); cursor:pointer;}
+  @media (max-width:820px){
+    .navlinks{position:fixed; top:84px; left:0; right:0; background:var(--bg); flex-direction:column; padding:26px 28px; gap:22px; display:none; border-bottom:1px solid var(--line);}
+    .navlinks.open{display:flex;}
+    .navtoggle{display:block;}
+  }
+
+  .page-head{padding:70px 0 20px; text-align:center;}
+  .sec-index{font-size:13px; letter-spacing:0.2em; color:var(--accent); text-transform:uppercase;}
+  body.ar .sec-index{text-transform:none;}
+  .page-head h1{font-size:clamp(40px,6vw,68px); margin-top:16px;}
+  .page-sub{color:var(--muted); margin-top:14px; font-family:var(--font-display-en); font-style:italic; font-size:17px;}
+  body.ar .page-sub{font-family:var(--font-body-ar); font-style:normal; font-size:15px;}
+
+  .filters{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:44px 0 10px;}
+  .filter-btn{padding:9px 20px; border:1px solid var(--line); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); background:transparent; cursor:pointer; transition:all .2s;}
+  body.ar .filter-btn{text-transform:none; letter-spacing:0;}
+  .filter-btn.active{border-color:var(--accent); color:var(--accent);}
+
+  .work-row{display:grid; grid-template-columns:80px 1fr auto; align-items:center; gap:26px; padding:26px 0; border-bottom:1px solid var(--line); transition:background-color .2s;}
+  .work-row:first-of-type{border-top:1px solid var(--line);}
+  .work-row:hover{background:var(--bg-2);}
+  .work-year{font-size:14px; color:var(--muted);}
+  .work-name{font-family:var(--font-display-en); font-size:25px;}
+  body.ar .work-name{font-family:var(--font-display-ar);}
+  .work-role{font-size:14px; color:var(--muted); margin-top:4px;}
+  .work-type{font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); white-space:nowrap;}
+  body.ar .work-type{text-transform:none;}
+  @media (max-width:700px){ .work-row{grid-template-columns:1fr; gap:6px;} }
+
+  .back-link{display:flex; justify-content:center; margin-top:50px;}
+  footer{text-align:center; padding:36px 0; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:15px 32px; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; border:1px solid var(--accent); transition:all .25s;}
+  body.ar .btn{text-transform:none; letter-spacing:0;}
+  .btn-outline{color:var(--ink); border-color:var(--line);}
+  .btn-outline:hover{border-color:var(--accent); color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="preview-box" id="previewBox">
+  <img id="previewImg" src="" alt="Work Preview">
+</div>
+
+<nav>
+  <div class="wrap">
+    <a href="index.html" class="brand">Mostafa Abotaha</a>
+    <div class="navlinks" id="navlinks">
+      <a href="index.html#about" data-en="Biography" data-ar="نبذة">Biography</a>
+      <a href="index.html#upcoming" data-en="Upcoming" data-ar="قادم">Upcoming</a>
+      <a href="index.html#contact" data-en="Contact" data-ar="تواصل">Contact</a>
+      <a href="works.html" class="current" data-en="All Works" data-ar="كل الأعمال">All Works</a>
+    </div>
+    <div class="navright">
+      <div class="langtoggle">
+        <button id="btnEn" class="active">EN</button>
+        <button id="btnAr">ع</button>
+      </div>
+      <button class="navtoggle" id="navtoggle"><i class="ti ti-menu-2"></i></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <span class="sec-index" data-en="Filmography" data-ar="الأعمال">Filmography</span>
+    <h1 data-en="All Works" data-ar="كل الأعمال">All Works</h1>
+    <p class="page-sub" data-en="Every production, in order — hover a title for a preview." data-ar="كل الأعمال بالترتيب — حط الماوس على أي عنوان تشوف معاينة.">Every production, in order — hover a title for a preview.</p>
+  </div>
+</section>
+
+<!-- ================= EASY-EDIT: full filmography list. ================= -->
+<section>
+  <div class="wrap">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all" data-en="All" data-ar="الكل">All</button>
+      <button class="filter-btn" data-filter="film" data-en="Film" data-ar="أفلام">Film</button>
+      <button class="filter-btn" data-filter="tv" data-en="TV" data-ar="دراما">TV</button>
+      <button class="filter-btn" data-filter="theatre" data-en="Theatre" data-ar="مسرح">Theatre</button>
+      <button class="filter-btn" data-filter="commercial" data-en="Commercials" data-ar="إعلانات">Commercials</button>
+    </div>
+
+    <div id="workList">
+      <div class="work-row" data-type="film" data-preview-img="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2024</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="Feature Film" data-ar="فيلم سينمائي">Feature Film</span>
+      </div>
+
+      <div class="work-row" data-type="tv" data-preview-img="https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2023</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="TV Drama" data-ar="مسلسل درامي">TV Drama</span>
+      </div>
+
+      <div class="work-row" data-type="theatre" data-preview-img="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2022</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="Theatre" data-ar="مسرحية">Theatre</span>
+      </div>
+
+      <div class="work-row" data-type="commercial" data-preview-img="https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2022</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="Commercial" data-ar="إعلان">Commercial</span>
+      </div>
+
+      <div class="work-row" data-type="film" data-preview-img="https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2021</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="Short Film" data-ar="فيلم قصير">Short Film</span>
+      </div>
+
+      <div class="work-row" data-type="tv" data-preview-img="https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2021</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="TV Drama" data-ar="دراما تلفزيونية">TV Drama</span>
+      </div>
+
+      <div class="work-row" data-type="film" data-preview-img="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80">
+        <span class="work-year">2020</span>
+        <div><div class="work-name" data-en="[Title of work]" data-ar="[اسم العمل]">[Title of work]</div><div class="work-role" data-en="Role played" data-ar="الدور اللي لعبته">Role played</div></div>
+        <span class="work-type" data-en="Feature Film" data-ar="فيلم سينمائي">Feature Film</span>
+      </div>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html" class="btn btn-outline"><i class="ti ti-arrow-left"></i> <span data-en="Back to home" data-ar="العودة للرئيسية">Back to home</span></a>
+    </div>
+  </div>
+</section>
+
+<footer data-en="© 2026 Mostafa Abotaha — All rights reserved" data-ar="© 2026 مصطفى ابوطه — جميع الحقوق محفوظة">© 2026 Mostafa Abotaha — All rights reserved</footer>
+
+<script>
+  var i18nEls = document.querySelectorAll('[data-en]');
+  var htmlRoot = document.getElementById('htmlRoot');
+  var body = document.body;
+  var currentLang = 'en';
+  function setLang(lang){
+    currentLang = lang;
+    i18nEls.forEach(function(el){ el.textContent = el.getAttribute('data-' + lang); });
+    if(lang === 'ar'){
+      htmlRoot.setAttribute('lang','ar'); htmlRoot.setAttribute('dir','rtl'); body.classList.add('ar');
+      document.getElementById('btnAr').classList.add('active'); document.getElementById('btnEn').classList.remove('active');
+    } else {
+      htmlRoot.setAttribute('lang','en'); htmlRoot.setAttribute('dir','ltr'); body.classList.remove('ar');
+      document.getElementById('btnEn').classList.add('active'); document.getElementById('btnAr').classList.remove('active');
+    }
+  }
+  document.getElementById('btnEn').addEventListener('click', function(){ setLang('en'); });
+  document.getElementById('btnAr').addEventListener('click', function(){ setLang('ar'); });
+  document.getElementById('navtoggle').addEventListener('click', function(){ document.getElementById('navlinks').classList.toggle('open'); });
+  document.querySelectorAll('.navlinks a').forEach(function(a){ a.addEventListener('click', function(){ document.getElementById('navlinks').classList.remove('open'); }); });
+
+  var dot = document.getElementById('cursorDot');
+  var ring = document.getElementById('cursorRing');
+  var ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', function(e){
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.transform = 'translate(' + mouseX + 'px,' + mouseY + 'px) translate(-50%,-50%)';
+  });
+  (function animateRing(){
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    ring.style.transform = 'translate(' + ringX + 'px,' + ringY + 'px) translate(-50%,-50%)';
+    requestAnimationFrame(animateRing);
+  })();
+  document.querySelectorAll('a, button').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ ring.classList.add('hover'); });
+    el.addEventListener('mouseleave', function(){ ring.classList.remove('hover'); });
+  });
+
+  var previewBox = document.getElementById('previewBox');
+  var previewImg = document.getElementById('previewImg');
+
+  function wireRow(row){
+    row.addEventListener('mouseenter', function(){
+      var imgSrc = row.getAttribute('data-preview-img');
+      if(imgSrc){
+        previewImg.src = imgSrc;
+        previewBox.classList.add('show');
+      }
+    });
+    row.addEventListener('mousemove', function(e){
+      previewBox.style.left = (e.clientX + 26) + 'px';
+      previewBox.style.top = (e.clientY - 100) + 'px';
+    });
+    row.addEventListener('mouseleave', function(){ 
+      previewBox.classList.remove('show'); 
+    });
+  }
+  document.querySelectorAll('.work-row').forEach(wireRow);
+
+  /* filter buttons */
+  document.querySelectorAll('.filter-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var f = btn.getAttribute('data-filter');
+      document.querySelectorAll('.work-row').forEach(function(row){
+        row.style.display = (f === 'all' || row.getAttribute('data-type') === f) ? 'grid' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

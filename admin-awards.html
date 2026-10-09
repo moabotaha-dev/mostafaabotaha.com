@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الجوائز — Awards Admin</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --bg: #0c0b0a; --bg-2: #16140f; --ink: #f2ede2; --muted: #a49a86;
+    --accent: #c1272d; --line: rgba(242,237,226,0.12); --card: #17150f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:'Tajawal', sans-serif; line-height:1.8;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 28px;}
+  
+  #loginOverlay{
+    position:fixed; inset:0; background:var(--bg); z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .login-card{
+    background:var(--card); border:1px solid var(--line);
+    padding:40px; border-radius:4px; max-width:400px; width:90%; text-align:center;
+  }
+  .login-card h2{margin-bottom:18px;}
+  
+  nav{height:80px; display:flex; align-items:center; border-bottom:1px solid var(--line); background:var(--bg);}
+  nav .wrap{display:flex; justify-content:space-between; align-items:center; width:100%;}
+  .brand{font-size:20px; color:var(--accent); font-weight:bold;}
+
+  .admin-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin:40px 0;}
+  @media(max-width:900px){ .admin-grid{grid-template-columns:1fr;} }
+
+  .panel{background:var(--card); border:1px solid var(--line); padding:30px; border-radius:4px;}
+  .panel-title{font-size:20px; margin-bottom:20px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line); padding-bottom:10px;}
+
+  .form-group{margin-bottom:16px;}
+  label{display:block; font-size:13px; color:var(--muted); margin-bottom:6px;}
+  input, select{width:100%; padding:10px 14px; background:var(--bg-2); border:1px solid var(--line); color:var(--ink); font-family:inherit; font-size:14px; border-radius:2px;}
+  input:focus, select:focus{border-color:var(--accent); outline:none;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; font-size:14px; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; border-radius:2px; transition:.25s;}
+  .btn:hover{background:transparent; color:var(--accent);}
+  .btn-outline{background:transparent; color:var(--ink); border-color:var(--line);}
+  .btn-outline:hover{border-color:var(--accent); color:var(--accent);}
+  .btn-edit{background:transparent; border-color:rgba(201,162,74,0.4); color:#c9a24a; padding:4px 10px; font-size:12px;}
+  .btn-edit:hover{background:#c9a24a; color:#0c0b0a;}
+  .btn-danger{background:transparent; border-color:rgba(193,39,45,0.4); color:#e74c3c; padding:4px 10px; font-size:12px;}
+  .btn-danger:hover{background:#e74c3c; color:#fff;}
+
+  .award-item{padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  .badge-tag{font-size:11px; padding:2px 8px; border:1px solid var(--accent); color:var(--accent);}
+  .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; padding:10px 24px; border-radius:20px; font-size:14px; display:none; z-index:10000;}
+</style>
+</head>
+<body>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <i class="ti ti-lock" style="font-size:40px; color:var(--accent);"></i>
+    <h2>دخول الإدارة</h2>
+    <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">أدخل بريدك وكلمة السر المسجلين في Firebase</p>
+    <form id="authForm">
+      <div class="form-group">
+        <input type="email" id="authEmail" placeholder="البريد الإلكتروني" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="authPassword" placeholder="كلمة المرور" required>
+      </div>
+      <button type="submit" class="btn" style="width:100%;">تسجيل الدخول</button>
+      <div id="authErr" style="color:var(--accent); font-size:13px; margin-top:10px; display:none;"></div>
+    </form>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">لوحة إدارة الجوائز والتكريمات</div>
+    <div style="display:flex; gap:10px;">
+      <a href="awards.html" target="_blank" class="btn btn-outline"><i class="ti ti-external-link"></i> معاينة الجوائز</a>
+      <button class="btn btn-outline" id="btnLogout"><i class="ti ti-logout"></i> خروج</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="admin-grid">
+    
+    <!-- قسم الإضافة / التعديل -->
+    <div class="panel">
+      <div class="panel-title" id="formHeader"><i class="ti ti-trophy"></i> إضافة جائزة / تكريم جديد</div>
+      <form id="awardForm">
+        <!-- حقل مخفي لمعرفة هل نحن في وضع التعديل أم الإضافة -->
+        <input type="hidden" id="editDocId" value="">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>السنة (Year)</label>
+            <input type="number" id="year" value="2026" required>
+          </div>
+          <div class="form-group">
+            <label>نوع التكريم (Badge)</label>
+            <select id="badgeSelect" onchange="toggleCustomBadge()">
+              <option value="Winner|فائز">Winner / فائز</option>
+              <option value="Honored|تكريم">Honored / تكريم</option>
+              <option value="Official Selection|مشاركة رسمية">Official Selection / مشاركة رسمية</option>
+              <option value="Nominee|ترشيح">Nominee / ترشيح</option>
+              <option value="custom">مخصص...</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="customBadgeRow" class="form-row" style="display:none; margin-bottom:16px;">
+          <div class="form-group">
+            <label>Badge بالإنجليزية</label>
+            <input type="text" id="badgeEn" placeholder="e.g. Finalist">
+          </div>
+          <div class="form-group">
+            <label>Badge بالعربية</label>
+            <input type="text" id="badgeAr" placeholder="مثال: تصفيات نهائية">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>اسم الجائزة (EN)</label>
+          <input type="text" id="titleEn" placeholder="Lift-Off Global Network" required dir="ltr">
+        </div>
+        <div class="form-group">
+          <label>اسم الجائزة (عربي)</label>
+          <input type="text" id="titleAr" placeholder="المهرجان أو التكريم" required>
+        </div>
+        <div class="form-group">
+          <label>الفيلم أو الوصف (EN)</label>
+          <input type="text" id="descEn" placeholder="Short Film | 7 Minutes" required dir="ltr">
+        </div>
+        <div class="form-group">
+          <label>الفيلم أو الوصف (عربي)</label>
+          <input type="text" id="descAr" placeholder="الفيلم القصير | ٧ دقايق" required>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button type="submit" class="btn" id="submitBtn" style="flex:1;"><i class="ti ti-cloud-upload"></i> حفظ ونشر في الموقع</button>
+          <button type="button" class="btn btn-outline" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()"><i class="ti ti-x"></i> إلغاء التعديل</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- قائمة الجوائز في السيرفر -->
+    <div class="panel">
+      <div class="panel-title"><i class="ti ti-list"></i> الجوائز المسجلة في السيرفر (<span id="count">0</span>)</div>
+      <div id="awardsAdminList" style="max-height:480px; overflow-y:auto; border:1px solid var(--line); border-radius:2px;"></div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-outline" id="btnInitDefaults"><i class="ti ti-database-import"></i> حفظ الجوائز السابقة في السيرفر (أول مرة فقط)</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toastMsg">تم الحفظ بنجاح!</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAxSjID34JTEwqG9dE0PEkR3uRZ3RIFg3I",
+    authDomain: "mysite-news.firebaseapp.com",
+    projectId: "mysite-news",
+    storageBucket: "mysite-news.firebasestorage.app",
+    messagingSenderId: "640458506844",
+    appId: "1:640458506844:web:bb997e3d223aa539235c99",
+    measurementId: "G-48FQQPSE08"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let cachedAwards = {};
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById("loginOverlay").style.display = "none";
+      loadAdminAwards();
+    } else {
+      document.getElementById("loginOverlay").style.display = "flex";
+    }
+  });
+
+  document.getElementById("authForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const em = document.getElementById("authEmail").value;
+    const ps = document.getElementById("authPassword").value;
+    const errEl = document.getElementById("authErr");
+    try {
+      await signInWithEmailAndPassword(auth, em, ps);
+      errEl.style.display = "none";
+    } catch(err) {
+      errEl.textContent = "خطأ: تأكد من صحة البريد وكلمة السر.";
+      errEl.style.display = "block";
+    }
+  });
+
+  document.getElementById("btnLogout").addEventListener("click", () => signOut(auth));
+
+  window.toggleCustomBadge = function(){
+    const val = document.getElementById('badgeSelect').value;
+    document.getElementById('customBadgeRow').style.display = val === 'custom' ? 'grid' : 'none';
+  };
+
+  async function loadAdminAwards() {
+    const listEl = document.getElementById("awardsAdminList");
+    listEl.innerHTML = "<p style='padding:16px; color:var(--muted);'>جاري التحميل...</p>";
+    
+    try {
+      const q = query(collection(db, "awards"), orderBy("year", "desc"));
+      const snapshot = await getDocs(q);
+      
+      document.getElementById("count").textContent = snapshot.size;
+      listEl.innerHTML = "";
+      cachedAwards = {};
+
+      if(snapshot.empty){
+        listEl.innerHTML = "<p style='padding:16px; color:var(--muted);'>لا توجد جوائز في السيرفر حالياً. اضغط على زر حفظ الجوائز السابقة بالأسفل.</p>";
+        return;
+      }
+
+      snapshot.forEach((docItem) => {
+        const a = docItem.data();
+        cachedAwards[docItem.id] = a;
+
+        const div = document.createElement("div");
+        div.className = "award-item";
+        div.innerHTML = `
+          <div>
+            <span style="color:var(--accent); font-weight:bold;">${a.year}</span> — <strong>${a.titleAr}</strong>
+            <span class="badge-tag">${a.badgeAr}</span>
+            <div style="font-size:12px; color:var(--muted);">${a.titleEn} (${a.descEn})</div>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-edit" title="تعديل الجائزة" onclick="window.startEdit('${docItem.id}')"><i class="ti ti-edit"></i></button>
+            <button class="btn btn-danger" title="حذف الجائزة" onclick="window.removeAward('${docItem.id}')"><i class="ti ti-trash"></i></button>
+          </div>
+        `;
+        listEl.appendChild(div);
+      });
+    } catch(e) {
+      listEl.innerHTML = "<p style='padding:16px; color:#e74c3c;'>تأكد من تفعيل قواعد Firestore Rules للقراءة والكتابة.</p>";
+    }
+  }
+
+  // بدء وضع التعديل وتعبئة البيانات في الفورم
+  window.startEdit = function(id) {
+    const data = cachedAwards[id];
+    if(!data) return;
+
+    document.getElementById("editDocId").value = id;
+    document.getElementById("year").value = data.year;
+    document.getElementById("titleEn").value = data.titleEn;
+    document.getElementById("titleAr").value = data.titleAr;
+    document.getElementById("descEn").value = data.descEn;
+    document.getElementById("descAr").value = data.descAr;
+
+    const badgeVal = `${data.badgeEn}|${data.badgeAr}`;
+    const badgeSelect = document.getElementById("badgeSelect");
+    
+    let matched = false;
+    for(let i=0; i<badgeSelect.options.length; i++){
+      if(badgeSelect.options[i].value === badgeVal){
+        badgeSelect.selectedIndex = i;
+        matched = true;
+        break;
+      }
+    }
+
+    if(!matched){
+      badgeSelect.value = "custom";
+      document.getElementById("badgeEn").value = data.badgeEn;
+      document.getElementById("badgeAr").value = data.badgeAr;
+    }
+    toggleCustomBadge();
+
+    // تحديث الواجهة إلى وضع التعديل
+    document.getElementById("formHeader").innerHTML = '<i class="ti ti-edit"></i> تعديل بيانات الجائزة';
+    document.getElementById("submitBtn").innerHTML = '<i class="ti ti-check"></i> تحديث وتعديل الجائزة';
+    document.getElementById("cancelEditBtn").style.display = "inline-flex";
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // إلغاء وضع التعديل والعودة للإضافة
+  window.cancelEdit = function() {
+    document.getElementById("editDocId").value = "";
+    document.getElementById("awardForm").reset();
+    document.getElementById("year").value = "2026";
+    toggleCustomBadge();
+
+    document.getElementById("formHeader").innerHTML = '<i class="ti ti-trophy"></i> إضافة جائزة / تكريم جديد';
+    document.getElementById("submitBtn").innerHTML = '<i class="ti ti-cloud-upload"></i> حفظ ونشر في الموقع';
+    document.getElementById("cancelEditBtn").style.display = "none";
+  };
+
+  // حفظ الإضافة أو التعديل
+  document.getElementById("awardForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const badgeSelect = document.getElementById('badgeSelect').value;
+    let bEn = '', bAr = '';
+    if(badgeSelect === 'custom'){
+      bEn = document.getElementById('badgeEn').value.trim() || 'Honored';
+      bAr = document.getElementById('badgeAr').value.trim() || 'تكريم';
+    } else {
+      const parts = badgeSelect.split('|');
+      bEn = parts[0]; bAr = parts[1];
+    }
+
+    const editId = document.getElementById("editDocId").value;
+    const payload = {
+      year: document.getElementById('year').value.trim(),
+      titleEn: document.getElementById('titleEn').value.trim(),
+      titleAr: document.getElementById('titleAr').value.trim(),
+      descEn: document.getElementById('descEn').value.trim(),
+      descAr: document.getElementById('descAr').value.trim(),
+      badgeEn: bEn,
+      badgeAr: bAr
+    };
+
+    if(editId) {
+      // تعديل مستند موجود
+      await updateDoc(doc(db, "awards", editId), payload);
+      showToast("تم تحديث الجائزة بنجاح!");
+      cancelEdit();
+    } else {
+      // إضافة مستند جديد
+      payload.createdAt = new Date().toISOString();
+      await addDoc(collection(db, "awards"), payload);
+      showToast("تم نشر الجائزة على الموقع فوراً!");
+      this.reset();
+      document.getElementById('year').value = payload.year;
+      toggleCustomBadge();
+    }
+
+    loadAdminAwards();
+  });
+
+  window.removeAward = async function(id) {
+    if(confirm("هل أنت متأكد من حذف هذا العنصر نهائياً؟")){
+      await deleteDoc(doc(db, "awards", id));
+      if(document.getElementById("editDocId").value === id) cancelEdit();
+      loadAdminAwards();
+      showToast("تم الحذف بنجاح");
+    }
+  };
+
+  // رفع الجوائز الـ 4 السابقة للـ Database في أول استخدام
+  document.getElementById("btnInitDefaults").addEventListener("click", async () => {
+    const defaultAwards = [
+      { year: "2024", titleEn: "Shield of Excellence", titleAr: "درع التميز", descEn: "Mentality Acting Workshop · Cairo", descAr: "ورشة Mentality للتمثيل · القاهرة", badgeEn: "Winner", badgeAr: "فائز" },
+      { year: "2025", titleEn: "Honored by the Cultural Counselor of the Embassy of Cameroon in Cairo", titleAr: "التكريم من قبل المستشار الثقافي لسفارة الكاميرون في القاهرة", descEn: "Short Film | Disconnected", descAr: "الفيلم القصير | غير متصل", badgeEn: "Honored", badgeAr: "تكريم" },
+      { year: "2025", titleEn: "Special Jury | Egyptian American Film Festival", titleAr: "لجنة التحكيم الخاصة | المهرجان المصري الامريكي للسينما والفنون", descEn: "Short Film | Disconnected", descAr: "الفيلم القصير | غير متصل", badgeEn: "Winner", badgeAr: "فائز" },
+      { year: "2026", titleEn: "Lift-Off Global Network", titleAr: "Lift-Off Global Network", descEn: "Short Film | 7 Minutes", descAr: "الفيلم القصير | ٧ دقايق", badgeEn: "Official Selection", badgeAr: "مشاركة رسمية" }
+    ];
+
+    for(let aw of defaultAwards){
+      await addDoc(collection(db, "awards"), { ...aw, createdAt: new Date().toISOString() });
+    }
+    showToast("تمت مزامنة الجوائز السابقة بنجاح!");
+    loadAdminAwards();
+  });
+
+  function showToast(msg){
+    const t = document.getElementById('toastMsg');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+</script>
+</body>
+</html>

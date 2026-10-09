@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>We Won't Leave Each Other</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #151514;
+      --text-main: #f8f3f1;
+      --accent: #d35400;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 3rem 0;
+      border-bottom: 1px solid #333;
+    }
+    h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .credits {
+      font-family: 'Lora', serif;
+      font-size: 1.2rem;
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .genre {
+      font-size: 1rem;
+      color: #bbb;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cta-banner {
+      text-align: center;
+      margin: 3rem 0;
+      padding: 1.5rem;
+      background: #1f1f1d;
+      border-radius: 8px;
+    }
+    .cta-banner h2 {
+      font-family: 'Lora', serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .roles-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    @media (min-width: 768px) {
+      .roles-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .role-card {
+      background: #1b1b19;
+      border: 1px solid #2a2a28;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .role-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .role-subtitle {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
+    .criteria-list {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: #ddd;
+      font-size: 0.95rem;
+    }
+    .criteria-list li {
+      margin-bottom: 0.4rem;
+    }
+    .apply-btn {
+      display: inline-block;
+      text-align: center;
+      background: var(--text-main);
+      color: var(--bg-color);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      transition: opacity 0.2s ease;
+    }
+    .apply-btn:hover {
+      opacity: 0.9;
+    }
+    .link-primary {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>We Won’t Leave Each Other</h1>
+      <p class="genre">Romance &bull; Comedy &bull; Drama</p>
+      <div class="credits">
+        <div><strong>Writer:</strong> Mostafa Abotaha</div>
+        <div><strong>Produced by:</strong> Mostafa Abotaha</div>
+      </div>
+      <p style="margin-top: 10px;">
+        <a class="link-primary" href="http://mostafaabotaha.com" target="_blank">Official Website</a>
+      </p>
+    </header>
+
+    <section class="cta-banner">
+      <h2>We are looking for actors / actresses</h2>
+      <p>Apply Now! (Needed Roles)</p>
+    </section>
+
+    <div class="roles-grid">
+      <!-- Role: Marwan -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Marwan</h3>
+          <p class="role-subtitle">The male lead in the film</p>
+          <ul class="criteria-list">
+            <li>Played by: Mostafa Abotaha (Egyptian Actor)</li>
+            <li>Last Projects: 7 Minutes (Short Film), Disconnected (Short Film)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Role: Yasmin -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Yasmin</h3>
+          <p class="role-subtitle">The female lead in the film</p>
+          <ul class="criteria-list">
+            <li>Age: 22 - 27</li>
+            <li>Height: less than 170cm</li>
+            <li>Weight: less than 75kg</li>
+            <li>Hair color: Dark | Eye color: Any</li>
+            <li>Being relaxed during acting in front of the camera</li>
+            <li>The ability to wear evening dresses</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+
+      <!-- Role: Tarek -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Tarek</h3>
+          <p class="role-subtitle">Supporting Role</p>
+          <ul class="criteria-list">
+            <li>Age: Less than 30</li>
+            <li>Height: less than 180cm</li>
+            <li>Weight: 80kg or less</li>
+            <li>Bald</li>
+            <li>Eye color: Any | Skin: Any</li>
+            <li>Being relaxed during acting in front of the camera</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+
+      <!-- Role: Sarah -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Sarah</h3>
+          <p class="role-subtitle">Supporting Role</p>
+          <ul class="criteria-list">
+            <li>Age: Less than 30 and more than 22</li>
+            <li>Height: less than 170cm</li>
+            <li>Weight: 75kg or less</li>
+            <li>Hair color: Dark | Eye color: Any</li>
+            <li>Being relaxed during acting in front of the camera</li>
+            <li>The ability to wear evening dresses</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+
+      <!-- Role: Ziad -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Ziad</h3>
+          <p class="role-subtitle">Supporting Role</p>
+          <ul class="criteria-list">
+            <li>Age: Less than 30 and more than 22</li>
+            <li>Height: less than 180cm</li>
+            <li>Weight: 75kg or less</li>
+            <li>Skin / Hair / Eyes: Any</li>
+            <li>Being relaxed during acting in front of the camera</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+
+      <!-- Role: Haidy -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Haidy</h3>
+          <p class="role-subtitle">Supporting Role</p>
+          <ul class="criteria-list">
+            <li>Age: Less than 30 and more than 22</li>
+            <li>Height: less than 170cm</li>
+            <li>Weight: Any</li>
+            <li>Being relaxed during acting in front of the camera</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+
+      <!-- Role: Unnamed Girl -->
+      <div class="role-card">
+        <div>
+          <h3 class="role-title">Unnamed Girl</h3>
+          <p class="role-subtitle">Supporting Role</p>
+          <ul class="criteria-list">
+            <li>Age: 25 - 35</li>
+            <li>Height: less than 170cm</li>
+            <li>Weight: Less than 75kg</li>
+            <li>Hair color: will be Green or wear hair wig</li>
+            <li>Eye color: Any (Natural or lenses)</li>
+            <li>The ability to wear evening dresses</li>
+          </ul>
+        </div>
+        <a class="apply-btn" href="https://mostafaabotaha-casting.fillout.com/wewontleaveeachother" target="_blank">Apply for this role</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

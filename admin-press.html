@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>لوحة التحكم الشاملة — مصطفى أبوطه</title>
+  <style>
+    :root {
+      --bg: #0c0b0a;
+      --card: #17150f;
+      --accent: #c1272d;
+      --ink: #f2ede2;
+      --muted: #a49a86;
+      --line: rgba(242,237,226,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 30px 16px;
+    }
+    .panel-box {
+      width: 100%;
+      max-width: 780px;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 26px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+      margin-bottom: 30px;
+    }
+    h2 { font-size: 22px; margin-bottom: 20px; color: var(--ink); text-align: center; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input[type="text"], input[type="password"], input[type="url"], textarea, select {
+      width: 100%;
+      background: #080706;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 11px;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 75px; }
+    
+    .file-dropzone {
+      border: 2px dashed var(--line);
+      border-radius: 6px;
+      padding: 22px;
+      text-align: center;
+      background: #090807;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .file-dropzone:hover { border-color: var(--accent); }
+    .file-dropzone input { display: none; }
+    .preview-thumb {
+      max-height: 140px;
+      margin-top: 12px;
+      border-radius: 4px;
+      display: none;
+      border: 1px solid var(--line);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+      margin-top: 8px;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--ink); }
+    .btn-cancel { background: #3a3834; display: none; }
+    .btn-save-order {
+      background: #166534;
+      border: 1px solid #22c55e;
+      color: #86efac;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: none;
+    }
+    .btn-save-order:hover { background: #15803d; color: #fff; }
+    .btn-reset {
+      background: #27241d;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-reset:hover { border-color: var(--accent); color: #fff; }
+    .hidden { display: none !important; }
+    .status-msg { margin-top: 12px; font-size: 13.5px; text-align: center; line-height: 1.5; word-break: break-all; }
+
+    .tabs-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      background: #0c0b09;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all .2s;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .items-container {
+      margin-top: 25px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0a0908;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      gap: 12px;
+      user-select: none;
+      transition: background .2s, border-color .2s;
+    }
+    .list-item.dragging {
+      opacity: 0.4;
+      border: 1px dashed var(--accent);
+      background: #17150f;
+    }
+    .drag-handle {
+      cursor: grab;
+      font-size: 18px;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .list-item img {
+      width: 52px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #000;
+      pointer-events: none;
+    }
+    .item-meta { flex: 1; overflow: hidden; }
+    .item-meta h4 { font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta p { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    
+    .action-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-step {
+      background: #1d1b17;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+    .btn-step:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-edit { background: #d97706; color: #fff; }
+    .btn-delete { background: #b91c1c; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- شاشة الدخول -->
+  <div class="panel-box" id="loginCard">
+    <h2>تسجيل الدخول للوحة التحكم</h2>
+    <div class="form-group">
+      <label>اسم المستخدم أو الإيميل</label>
+      <input type="text" id="userInput" placeholder="اكتب الإيميل" dir="ltr">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="passInput" placeholder="••••••••" dir="ltr">
+    </div>
+    <button class="btn" id="btnLogin">دخول</button>
+    <div id="loginStatus" class="status-msg"></div>
+  </div>
+
+  <!-- لوحة الإدارة -->
+  <div class="panel-box hidden" id="mainDashboard">
+    <div class="tabs-bar">
+      <button class="tab-btn active" id="tabPress">📰 إدارة الصحافة (Press)</button>
+      <button class="tab-btn" id="tabGallery">🖼 إدارة وترتيب معارض الصور (Gallery)</button>
+    </div>
+
+    <!-- إدارة الصحافة -->
+    <div id="pressSection">
+      <h2 id="pressFormTitle" style="font-size: 18px;">إضافة خبر جديد إلى شريط الصحافة</h2>
+      <input type="hidden" id="editPressDocId" value="">
+
+      <div class="form-group">
+        <label>جهة النشر / المصدر</label>
+        <input type="text" id="newsSource" placeholder="مثال: Film Festivals News">
+      </div>
+      <div class="form-group">
+        <label>عنوان الخبر (بالعربية)</label>
+        <input type="text" id="titleAr" placeholder="عنوان الخبر بالعربي">
+      </div>
+      <div class="form-group">
+        <label>عنوان الخبر (بالإنجليزية)</label>
+        <input type="text" id="titleEn" placeholder="Title in English" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>نص وتفاصيل الخبر (بالعربية)</label>
+        <textarea id="textAr" placeholder="تفاصيل المقال أو الخبر بالعربي..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>نص وتفاصيل الخبر (بالإنجليزية)</label>
+        <textarea id="textEn" placeholder="Full article content in English..." dir="ltr"></textarea>
+      </div>
+      <div class="form-group">
+        <label>التاريخ (مثال: 2026)</label>
+        <input type="text" id="newsDate" placeholder="2026">
+      </div>
+      <div class="form-group">
+        <label>اسم الصورة أو رابطها</label>
+        <input type="text" id="newsImg" placeholder="7 Minutes Lift-Off Selection.png" dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>رابط المقال الأصلي</label>
+        <input type="url" id="newsLink" placeholder="https://..." dir="ltr">
+      </div>
+
+      <button class="btn" id="btnPublishPress">نشر الخبر على الموقع فوراً</button>
+      <button class="btn btn-cancel" id="btnCancelEditPress">إلغاء وضع التعديل</button>
+      <div id="pressStatus" class="status-msg"></div>
+
+      <div class="items-container">
+        <h3 style="font-size: 15px; color: var(--muted); margin-bottom: 12px;">الأخبار المنشورة في السيرفر</h3>
+        <div id="pressContainer">
+          <p style="color: var(--muted); font-size: 13px;">جاري تحميل الأخبار...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- إدارة وترتيب الصور -->
+    <div id="gallerySection" class="hidden">
+      <h2 style="font-size: 18px;">إدارة، رفع، وترتيب صور المعارض</h2>
+
+      <div class="form-group">
+        <label>اختر المعرض المراد إدارته وترتيبه:</label>
+        <select id="galleryTarget">
+          <option value="main">معرض الصور الرئيسي (gallery.html)</option>
+          <option value="collaborations">صور مشتركة وظهور خاص (collaborations.html)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>اختر صورة جديدة لرفعها إلى المعرض المحدد:</label>
+        <div class="file-dropzone" id="dropArea" onclick="document.getElementById('imageFileInput').click()">
+          <span style="font-size: 13px; color: var(--muted);">اضغط هنا لاختيار صورة من جهازك 📁</span>
+          <input type="file" id="imageFileInput" accept="image/*">
+          <br>
+          <img id="previewImg" class="preview-thumb" alt="Preview">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>عنوان أو وصف للصورة (اختياري)</label>
+        <input type="text" id="photoTitle" placeholder="مثال: لقطة من الكواليس">
+      </div>
+
+      <button class="btn" id="btnUploadPhoto">رفع ونشر الصورة في أول المعرض فوراً</button>
+      <div id="galleryStatus" class="status-msg"></div>
+
+      <div class="items-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap;">
+          <h3 style="font-size: 15px; color: var(--muted); margin: 0;">ترتيب الصور (اسحب ورتب، أو استخدم الأسهم ⬆️ ⬇️)</h3>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-save-order" id="btnSaveOrder">💾 حفظ الترتيب الجديد</button>
+            <button class="btn-reset" id="btnResetOrder">إعادة ترتيب المعرض الأصلي 🔄</button>
+          </div>
+        </div>
+        <div id="galleryPhotosContainer">
+          <p style="color: var(--muted); font-size: 13px;">جاري تحميل الصور...</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" id="btnLogout" style="margin-top: 30px;">تسجيل الخروج</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, where, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const IMGBB_API_KEY = "202be5cb4a50e7cb680472d4010b23e3";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAxSjID34JTEwqG9dE0PEkR3uRZ3RIFg3I",
+      authDomain: "mysite-news.firebaseapp.com",
+      projectId: "mysite-news",
+      storageBucket: "mysite-news.firebasestorage.app",
+      messagingSenderId: "640458506844",
+      appId: "1:640458506844:web:bb997e3d223aa539235c99",
+      measurementId: "G-48FQQPSE08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginCard = document.getElementById('loginCard');
+    const mainDashboard = document.getElementById('mainDashboard');
+    const loginStatus = document.getElementById('loginStatus');
+    const tabPress = document.getElementById('tabPress');
+    const tabGallery = document.getElementById('tabGallery');
+    const pressSection = document.getElementById('pressSection');
+    const gallerySection = document.getElementById('gallerySection');
+
+    tabPress.addEventListener('click', () => {
+      tabPress.classList.add('active');
+      tabGallery.classList.remove('active');
+      pressSection.classList.remove('hidden');
+      gallerySection.classList.add('hidden');
+    });
+
+    tabGallery.addEventListener('click', () => {
+      tabGallery.classList.add('active');
+      tabPress.classList.remove('active');
+      gallerySection.classList.remove('hidden');
+      pressSection.classList.add('hidden');
+      loadGalleryWithOrder();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginCard.classList.add('hidden');
+        mainDashboard.classList.remove('hidden');
+        listenToPress();
+        loadGalleryWithOrder();
+      } else {
+        loginCard.classList.remove('hidden');
+        mainDashboard.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('btnLogin').addEventListener('click', async () => {
+      loginStatus.style.color = '#a49a86';
+      loginStatus.textContent = 'جاري التحقق...';
+      const user = document.getElementById('userInput').value.trim();
+      const pass = document.getElementById('passInput').value.trim();
+      if (!user || !pass) return;
+
+      try {
+        await signInWithEmailAndPassword(auth, user, pass);
+        loginStatus.textContent = '';
+      } catch (err) {
+        loginStatus.style.color = '#c1272d';
+        loginStatus.textContent = 'خطأ في الدخول: ' + (err.code || err.message);
+      }
+    });
+
+    document.getElementById('btnLogout').addEventListener('click', () => signOut(auth));
+
+    /* 1. نظام الصحافة */
+    const pressContainer = document.getElementById('pressContainer');
+    const pressStatus = document.getElementById('pressStatus');
+    const pressFormTitle = document.getElementById('pressFormTitle');
+    const btnPublishPress = document.getElementById('btnPublishPress');
+    const btnCancelEditPress = document.getElementById('btnCancelEditPress');
+    const editPressDocId = document.getElementById('editPressDocId');
+    let allPressDocs = {};
+
+    function listenToPress() {
+      const q = query(collection(db, "press_articles"));
+      onSnapshot(q, (snapshot) => {
+        pressContainer.innerHTML = '';
+        allPressDocs = {};
+        if (snapshot.empty) {
+          pressContainer.innerHTML = '<p style="color: var(--muted); font-size: 13px;">لا توجد مقالات منشورة حالياً.</p>';
+          return;
+        }
+
+        snapshot.forEach((d) => {
+          const data = d.data();
+          allPressDocs[d.id] = data;
+          const item = document.createElement('div');
+          item.className = 'list-item';
+          item.innerHTML = `
+            <div class="item-meta">
+              <h4>${data.title_ar || data.title_en}</h4>
+              <p>${data.source || 'News'} — ${data.date || ''}</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-sm btn-edit btn-press-edit" data-id="${d.id}">تعديل</button>
+              <button class="btn-sm btn-delete btn-press-del" data-id="${d.id}">حذف</button>
+            </div>
+          `;
+          pressContainer.appendChild(item);
+        });
+
+        document.querySelectorAll('.btn-press-edit').forEach(b => {
+          b.addEventListener('click', () => {
+            const d = allPressDocs[b.getAttribute('data-id')];
+            if (!d) return;
+            editPressDocId.value = b.getAttribute('data-id');
+            document.getElementById('newsSource').value = d.source || '';
+            document.getElementById('titleAr').value = d.title_ar || '';
+            document.getElementById('titleEn').value = d.title_en || '';
+            document.getElementById('textAr').value = d.text_ar || '';
+            document.getElementById('textEn').value = d.text_en || '';
+            document.getElementById('newsDate').value = d.date || '';
+            document.getElementById('newsImg').value = d.img || '';
+            document.getElementById('newsLink').value = d.link || '';
+            pressFormTitle.textContent = 'تعديل الخبر المحدد';
+            btnPublishPress.textContent = 'حفظ التعديلات على الموقع';
+            btnCancelEditPress.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        });
+
+        document.querySelectorAll('.btn-press-del').forEach(b => {
+          b.addEventListener('click', async () => {
+            if (!confirm('حذف هذا المقال نهائياً؟')) return;
+            await deleteDoc(doc(db, "press_articles", b.getAttribute('data-id')));
+          });
+        });
+      });
+    }
+
+    btnCancelEditPress.addEventListener('click', () => {
+      editPressDocId.value = '';
+      pressFormTitle.textContent = 'إضافة خبر جديد إلى شريط الصحافة';
+      btnPublishPress.textContent = 'نشر الخبر على الموقع فوراً';
+      btnCancelEditPress.style.display = 'none';
+      document.getElementById('newsSource').value = '';
+      document.getElementById('titleAr').value = '';
+      document.getElementById('titleEn').value = '';
+      document.getElementById('textAr').value = '';
+      document.getElementById('textEn').value = '';
+      document.getElementById('newsDate').value = '';
+      document.getElementById('newsImg').value = '';
+      document.getElementById('newsLink').value = '';
+    });
+
+    btnPublishPress.addEventListener('click', async () => {
+      const source = document.getElementById('newsSource').value.trim() || 'News';
+      const titleAr = document.getElementById('titleAr').value.trim();
+      const titleEn = document.getElementById('titleEn').value.trim();
+      const textAr = document.getElementById('textAr').value.trim();
+      const textEn = document.getElementById('textEn').value.trim();
+      const date = document.getElementById('newsDate').value.trim() || new Date().getFullYear().toString();
+      const img = document.getElementById('newsImg').value.trim() || 'About Image.png';
+      const link = document.getElementById('newsLink').value.trim() || '#';
+
+      if (!titleAr || !titleEn) {
+        pressStatus.style.color = '#c1272d';
+        pressStatus.textContent = 'يرجى إدخال العنوان بالعربية والإنجليزية';
+        return;
+      }
+
+      pressStatus.style.color = '#a49a86';
+      pressStatus.textContent = 'جاري الحفظ...';
+
+      const payload = { source, title_ar: titleAr, title_en: titleEn, text_ar: textAr || titleAr, text_en: textEn || titleEn, date, img, link };
+
+      try {
+        if (editPressDocId.value) {
+          await updateDoc(doc(db, "press_articles", editPressDocId.value), payload);
+          pressStatus.style.color = '#4caf50';
+          pressStatus.textContent = '✓ تم حفظ التعديلات بنجاح!';
+        } else {
+          payload.timestamp = Date.now();
+          await addDoc(collection(db, "press_articles"), payload);
+          pressStatus.style.color = '#4caf50';
+          pressStatus.textContent = '✓ تم نشر المقال بنجاح!';
+        }
+        btnCancelEditPress.click();
+      } catch (e) {
+        pressStatus.style.color = '#c1272d';
+        pressStatus.textContent = 'خطأ: ' + e.message;
+      }
+    });
+
+    /* 2. نظام إدارة وترتيب الصور المتقدم */
+    const galleryTarget = document.getElementById('galleryTarget');
+    const imageFileInput = document.getElementById('imageFileInput');
+    const previewImg = document.getElementById('previewImg');
+    const btnUploadPhoto = document.getElementById('btnUploadPhoto');
+    const galleryStatus = document.getElementById('galleryStatus');
+    const galleryPhotosContainer = document.getElementById('galleryPhotosContainer');
+    const photoTitle = document.getElementById('photoTitle');
+    const btnResetOrder = document.getElementById('btnResetOrder');
+    const btnSaveOrder = document.getElementById('btnSaveOrder');
+
+    const defaultImages = {
+      main: [
+        "Berry1.webp","Berry2.webp","Berry3.webp","Berry4.webp","Berry5.webp","Berry6.webp","Berry7.webp",
+        "Berry8.webp","Berry9.webp","Berry10.webp","Berry11.webp","Berry12.webp","Berry13.webp","1.png",
+        "2.png","3.png","4.png","5.png","6.png","7.png","8.png","9.png","10.png","11.png","12.jpg",
+        "13.jpg","14.jpg","15.jpg","16.jpg","17 (0).jpg","17 (1).jpg","17 (2).jpg","17.jpg","18.jpg",
+        "21.jpg","20.jpg","21.jpg","22.png","23.png","24.png","25.png","26.png","27.png","28.jpg",
+        "29.jpg","30.jpg","31.jpg","32.jpg","33.jpg","34.jpg","35.jpg","36.jpg","37.jpg","38.jpg",
+        "39.jpg","40.jpg","41.jpg","42.jpg","43.jpg","44.jpg","45.jpg","46.png","47.png","48.jpeg",
+        "49.jpg","50.jpg","51 (0).jpg","51.jpg","52.jpg","53.jpg","54.jpg"
+      ],
+      collaborations: [
+        "Elaria1.webp","Elaria2.webp","Elaria3.webp","Elaria4.webp","Elaria5.webp","Elaria6.webp","Elaria7.webp",
+        "Elaria8.webp","Elaria9.webp","Elaria10.webp","Elaria11.webp","Elaria12.webp","Elaria13.webp","Elaria14.webp",
+        "Elaria15.webp","Nahar1.jpeg","Nahar2.jpeg","Rahma1.webp","Rahma2.webp","Rahma3.webp","DisconnectedMates.jpg",
+        "Ekram.png","Abudawod.jpg","AmrRamzy.png"
+      ]
+    };
+
+    imageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        previewImg.src = URL.createObjectURL(file);
+        previewImg.style.display = 'inline-block';
+      }
+    });
+
+    let unsubscribeGallery = null;
+    let currentPhotosList = [];
+
+    // استعادة الترتيب الأصلي
+    async function resetToExactOrder() {
+      const target = galleryTarget.value;
+      if (!confirm(`هل تريد استعادة الترتيب الأصلي لصور (${target})؟`)) return;
+
+      galleryStatus.style.color = '#a49a86';
+      galleryStatus.textContent = 'جاري إعادة الضبط والترتيب...';
+
+      try {
+        const qOld = query(collection(db, "site_photos"), where("target", "==", target));
+        const oldSnap = await getDocs(qOld);
+        const batch = writeBatch(db);
+        oldSnap.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+
+        const arr = defaultImages[target] || [];
+        for (let i = 0; i < arr.length; i++) {
+          await addDoc(collection(db, "site_photos"), {
+            url: arr[i],
+            target: target,
+            title: `${target === 'main' ? 'Photo' : 'Collaboration'} ${i + 1}`,
+            order: i,
+            timestamp: Date.now() - (i * 1000)
+          });
+        }
+
+        galleryStatus.style.color = '#4caf50';
+        galleryStatus.textContent = '✓ تم استعادة الترتيب الأصلي بنجاح!';
+        btnSaveOrder.style.display = 'none';
+      } catch (err) {
+        galleryStatus.style.color = '#c1272d';
+        galleryStatus.textContent = 'خطأ أثناء إعادة الضبط: ' + err.message;
+      }
+    }
+
+    btnResetOrder.addEventListener('click', resetToExactOrder);
+
+    // دالة عرض وتفعيل السحب والتحريك
+    function renderDraggableList() {
+      galleryPhotosContainer.innerHTML = '';
+      if (currentPhotosList.length === 0) {
+        galleryPhotosContainer.innerHTML = '<p style="color: var(--muted); font-size: 13px;">لا توجد صور في هذا المعرض حالياً.</p>';
+        return;
+      }
+
+      currentPhotosList.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.setAttribute('draggable', 'true');
+        div.setAttribute('data-index', index);
+        div.innerHTML = `
+          <div class="drag-handle" title="اسحب لتحريك الترتيب">☰</div>
+          <img src="${item.url}" alt="Thumbnail" onerror="this.src='favicon.png'">
+          <div class="item-meta">
+            <h4>${index + 1}. ${item.title || item.url}</h4>
+            <p style="font-size: 11px; opacity: 0.7;">${item.url}</p>
+          </div>
+          <div class="action-controls">
+            <button class="btn-step btn-up" data-idx="${index}" title="تقديم خطوة">⬆️</button>
+            <button class="btn-step btn-down" data-idx="${index}" title="تأخير خطوة">⬇️</button>
+            <button class="btn-sm btn-delete btn-del-photo" data-id="${item.id}">حذف</button>
+          </div>
+        `;
+        galleryPhotosContainer.appendChild(div);
+      });
+
+      // أزرار التقديم والتأخير السريعة
+      document.querySelectorAll('.btn-up').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'));
+          if (idx > 0) {
+            const temp = currentPhotosList[idx];
+            currentPhotosList[idx] = currentPhotosList[idx - 1];
+            currentPhotosList[idx - 1] = temp;
+            renderDraggableList();
+            btnSaveOrder.style.display = 'inline-block';
+          }
+        });
+      });
+
+      document.querySelectorAll('.btn-down').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'));
+          if (idx < currentPhotosList.length - 1) {
+            const temp = currentPhotosList[idx];
+            currentPhotosList[idx] = currentPhotosList[idx + 1];
+            currentPhotosList[idx + 1] = temp;
+            renderDraggableList();
+            btnSaveOrder.style.display = 'inline-block';
+          }
+        });
+      });
+
+      // زر الحذف
+      document.querySelectorAll('.btn-del-photo').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('حذف هذه الصورة نهائياً من المعرض؟')) return;
+          await deleteDoc(doc(db, "site_photos", btn.getAttribute('data-id')));
+        });
+      });
+
+      // تفعيل السحب والإفلات Drag & Drop
+      let dragStartIndex = -1;
+      const items = galleryPhotosContainer.querySelectorAll('.list-item');
+      items.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          dragStartIndex = parseInt(item.getAttribute('data-index'));
+          item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+        });
+
+        item.addEventListener('dragover', (e) => {
+          e.preventDefault();
+        });
+
+        item.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const dragEndIndex = parseInt(item.getAttribute('data-index'));
+          if (dragStartIndex !== dragEndIndex && dragStartIndex !== -1) {
+            const draggedItem = currentPhotosList.splice(dragStartIndex, 1)[0];
+            currentPhotosList.splice(dragEndIndex, 0, draggedItem);
+            renderDraggableList();
+            btnSaveOrder.style.display = 'inline-block';
+          }
+        });
+      });
+    }
+
+    // حفظ الترتيب الجديد في السيرفر
+    btnSaveOrder.addEventListener('click', async () => {
+      btnSaveOrder.disabled = true;
+      btnSaveOrder.textContent = 'جاري حفظ الترتيب...';
+      galleryStatus.style.color = '#a49a86';
+      galleryStatus.textContent = 'جاري تثبيت ترتيب الصور في السيرفر...';
+
+      try {
+        const batch = writeBatch(db);
+        currentPhotosList.forEach((item, index) => {
+          const docRef = doc(db, "site_photos", item.id);
+          batch.update(docRef, { order: index });
+        });
+        await batch.commit();
+
+        galleryStatus.style.color = '#4caf50';
+        galleryStatus.textContent = '✓ تم حفظ الترتيب الجديد بنجاح وانعكاسه على الموقع!';
+        btnSaveOrder.style.display = 'none';
+      } catch (err) {
+        galleryStatus.style.color = '#c1272d';
+        galleryStatus.textContent = 'خطأ أثناء حفظ الترتيب: ' + err.message;
+      } finally {
+        btnSaveOrder.disabled = false;
+        btnSaveOrder.textContent = '💾 حفظ الترتيب الجديد';
+      }
+    });
+
+    async function loadGalleryWithOrder() {
+      if (unsubscribeGallery) unsubscribeGallery();
+      const target = galleryTarget.value;
+      btnSaveOrder.style.display = 'none';
+
+      galleryPhotosContainer.innerHTML = '<p style="color: var(--muted); font-size: 13px;">جاري تحميل الصور...</p>';
+
+      try {
+        const qCheck = query(collection(db, "site_photos"), where("target", "==", target));
+        const snap = await getDocs(qCheck);
+
+        if (snap.empty) {
+          const arr = defaultImages[target] || [];
+          for (let i = 0; i < arr.length; i++) {
+            await addDoc(collection(db, "site_photos"), {
+              url: arr[i],
+              target: target,
+              title: `${target === 'main' ? 'Photo' : 'Collaboration'} ${i + 1}`,
+              order: i,
+              timestamp: Date.now() - (i * 1000)
+            });
+          }
+        }
+
+        const qLive = query(collection(db, "site_photos"), where("target", "==", target));
+        unsubscribeGallery = onSnapshot(qLive, (snapshot) => {
+          currentPhotosList = [];
+          snapshot.forEach(docSnap => {
+            currentPhotosList.push({ id: docSnap.id, ...docSnap.data() });
+          });
+
+          // الترتيب بحسب حقل order
+          currentPhotosList.sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+          renderDraggableList();
+        });
+
+      } catch (err) {
+        galleryPhotosContainer.innerHTML = `<p style="color: #c1272d; font-size: 13px;">خطأ: ${err.message}</p>`;
+      }
+    }
+
+    galleryTarget.addEventListener('change', loadGalleryWithOrder);
+
+    // رفع صورة جديدة (تنزل بالترتيب رقم 0 أعلى الكل)
+    btnUploadPhoto.addEventListener('click', async () => {
+      const file = imageFileInput.files[0];
+      if (!file) {
+        galleryStatus.style.color = '#c1272d';
+        galleryStatus.textContent = 'يرجى اختيار صورة من جهازك أولاً!';
+        return;
+      }
+
+      btnUploadPhoto.disabled = true;
+      btnUploadPhoto.textContent = 'جاري رفع الصورة إلى السيرفر...';
+      galleryStatus.style.color = '#a49a86';
+      galleryStatus.textContent = 'جاري المعالجة والرفع...';
+
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData
+        });
+        const json = await res.json();
+
+        if (!json.success) throw new Error(json.error?.message || "فشل الرفع");
+
+        const directUrl = json.data.url;
+
+        // إزاحة ترتيب الصور السابقة لتبدأ الصورة الجديدة بالترتيب 0
+        const batch = writeBatch(db);
+        currentPhotosList.forEach(item => {
+          const docRef = doc(db, "site_photos", item.id);
+          batch.update(docRef, { order: (item.order ?? 0) + 1 });
+        });
+        await batch.commit();
+
+        await addDoc(collection(db, "site_photos"), {
+          url: directUrl,
+          target: galleryTarget.value,
+          title: photoTitle.value.trim() || file.name,
+          order: 0,
+          timestamp: Date.now()
+        });
+
+        galleryStatus.style.color = '#4caf50';
+        galleryStatus.textContent = '✓ تم رفع الصورة ونشرها في أول المعرض بنجاح!';
+        imageFileInput.value = '';
+        previewImg.style.display = 'none';
+        photoTitle.value = '';
+      } catch (err) {
+        galleryStatus.style.color = '#c1272d';
+        galleryStatus.textContent = 'حدث خطأ: ' + err.message;
+      } finally {
+        btnUploadPhoto.disabled = false;
+        btnUploadPhoto.textContent = 'رفع ونشر الصورة في أول المعرض فوراً';
+      }
+    });
+  </script>
+</body>
+</html>
