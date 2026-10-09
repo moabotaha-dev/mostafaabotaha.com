@@ -453,7 +453,7 @@
       frame.setAttribute('data-doc-id', item.id);
       frame.innerHTML = `
         <div class="frame-canvas">
-          <img src="${item.url}" alt="${item.title || 'Photo'}" loading="lazy" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src = this.src.match(/\.jpg$/i) ? (this.src.endsWith('.jpg') ? this.src.replace(/\.jpg$/, '.JPG') : this.src.replace(/\.JPG$/, '.jpg')) : (this.src.endsWith('.png') ? this.src.replace(/\.png$/, '.PNG') : this.src.replace(/\.PNG$/, '.png'));}">
+        <img src="${item.url}" alt="${item.title || 'Photo'}" loading="lazy" decoding="async" onerror="if(!this.dataset.tried){this.dataset.tried=1; let s=this.src; if(s.endsWith('.jpg')) this.src=s.slice(0,-4)+'.JPG'; else if(s.endsWith('.JPG')) this.src=s.slice(0,-4)+'.jpg'; else if(s.endsWith('.jpeg')) this.src=s.slice(0,-5)+'.jpg'; else if(s.endsWith('.png')) this.src=s.slice(0,-4)+'.PNG';}">
         </div>
       `;
       galleryGrid.appendChild(frame);
