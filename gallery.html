@@ -453,7 +453,7 @@
       frame.setAttribute('data-doc-id', item.id);
       frame.innerHTML = `
         <div class="frame-canvas">
-        <img src="${item.url}" alt="${item.title || 'Photo'}" loading="lazy" decoding="async" onerror="if(!this.dataset.tried){this.dataset.tried=1; let s=this.src; if(s.endsWith('.jpg')) this.src=s.slice(0,-4)+'.JPG'; else if(s.endsWith('.JPG')) this.src=s.slice(0,-4)+'.jpg'; else if(s.endsWith('.jpeg')) this.src=s.slice(0,-5)+'.jpg'; else if(s.endsWith('.png')) this.src=s.slice(0,-4)+'.PNG';}">
+        <img src="${item.url}" alt="${item.title || 'Photo'}" loading="lazy" decoding="async" onerror="if(!this.dataset.tried){this.dataset.tried=1; let s=this.src; if(s.endsWith('.jpg')) this.src=s.slice(0,-4)+'.JPG'; else if(s.endsWith('.JPG')) this.src=s.slice(0,-4)+'.jpg'; else if(s.endsWith('.png')) this.src=s.slice(0,-4)+'.PNG'; else if(s.endsWith('.PNG')) this.src=s.slice(0,-4)+'.png';} else if(this.dataset.tried==1){this.dataset.tried=2; let s=this.src; if(s.match(/\.jpe?g$/i)) this.src=s.replace(/\.jpe?g$/i, '.png'); else if(s.match(/\.png$/i)) this.src=s.replace(/\.png$/i, '.jpg');}">
         </div>
       `;
       galleryGrid.appendChild(frame);
