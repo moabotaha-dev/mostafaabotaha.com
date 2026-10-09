@@ -214,7 +214,9 @@
       font-weight: 600;
     }
     .btn-edit { background: #d97706; color: #fff; }
+    .btn-edit:hover { background: #b45309; }
     .btn-delete { background: #b91c1c; color: #fff; }
+    .btn-delete:hover { background: #991b1b; }
   </style>
 </head>
 <body>
@@ -294,6 +296,9 @@
     <!-- إدارة وترتيب الصور -->
     <div id="gallerySection" class="hidden">
       <h2 style="font-size: 18px;">إدارة، رفع، وترتيب صور المعارض</h2>
+
+      <!-- Input خفي لاختيار ملف استبدال صورة بعينها -->
+      <input type="file" id="replacePhotoFileInput" accept="image/*" style="display: none;">
 
       <div class="form-group">
         <label>اختر المعرض المراد إدارته وترتيبه:</label>
@@ -542,6 +547,9 @@
     const photoTitle = document.getElementById('photoTitle');
     const btnResetOrder = document.getElementById('btnResetOrder');
     const btnSaveOrder = document.getElementById('btnSaveOrder');
+    const replacePhotoFileInput = document.getElementById('replacePhotoFileInput');
+
+    let photoIdToReplace = null; // لتخزين معرف الصورة المراد استبدالها
 
     const defaultImages = {
       main: [
@@ -610,7 +618,7 @@
 
     btnResetOrder.addEventListener('click', resetToExactOrder);
 
-    // دالة عرض وتفعيل السحب والتحريك
+    // دالة عرض وتفعيل السحب والتحريك وزر الاستبدال
     function renderDraggableList() {
       galleryPhotosContainer.innerHTML = '';
       if (currentPhotosList.length === 0) {
@@ -633,10 +641,20 @@
           <div class="action-controls">
             <button class="btn-step btn-up" data-idx="${index}" title="تقديم خطوة">⬆️</button>
             <button class="btn-step btn-down" data-idx="${index}" title="تأخير خطوة">⬇️</button>
+            <button class="btn-sm btn-edit btn-replace-photo" data-id="${item.id}" title="استبدال هذه الصورة بصورة جديدة من جهازك مع الحفاظ على نفس مكانها وترتيبها">استبدال 🔄</button>
             <button class="btn-sm btn-delete btn-del-photo" data-id="${item.id}">حذف</button>
           </div>
         `;
         galleryPhotosContainer.appendChild(div);
+      });
+
+      // زر الاستبدال السريع (يفتح نافذة اختيار صورة من الجهاز)
+      document.querySelectorAll('.btn-replace-photo').forEach(btn => {
+        btn.addEventListener('click', () => {
+          photoIdToReplace = btn.getAttribute('data-id');
+          replacePhotoFileInput.value = '';
+          replacePhotoFileInput.click();
+        });
       });
 
       // أزرار التقديم والتأخير السريعة
@@ -703,6 +721,44 @@
         });
       });
     }
+
+    // منطق رفع واستبدال الصورة المحددة فور اختيار الملف
+    replacePhotoFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !photoIdToReplace) return;
+
+      galleryStatus.style.color = '#a49a86';
+      galleryStatus.textContent = 'جاري رفع الصورة واستبدالها في نفس المكان...';
+
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData
+        });
+        const json = await res.json();
+
+        if (!json.success) throw new Error(json.error?.message || "فشل الرفع");
+
+        const directUrl = json.data.image?.url || json.data.display_url || json.data.url;
+
+        // تحديث الرابط فقط في نفس المستند للاحتفاظ بنفس الترتيب والمكان
+        await updateDoc(doc(db, "site_photos", photoIdToReplace), {
+          url: directUrl
+        });
+
+        galleryStatus.style.color = '#4caf50';
+        galleryStatus.textContent = '✓ تم استبدال الصورة بنجاح في نفس مكانها وترتيبها!';
+      } catch (err) {
+        galleryStatus.style.color = '#c1272d';
+        galleryStatus.textContent = 'خطأ أثناء استبدال الصورة: ' + err.message;
+      } finally {
+        photoIdToReplace = null;
+        replacePhotoFileInput.value = '';
+      }
+    });
 
     // حفظ الترتيب الجديد في السيرفر
     btnSaveOrder.addEventListener('click', async () => {
@@ -800,7 +856,7 @@
 
         if (!json.success) throw new Error(json.error?.message || "فشل الرفع");
 
-        const directUrl = json.data.url;
+        const directUrl = json.data.image?.url || json.data.display_url || json.data.url;
 
         // إزاحة ترتيب الصور السابقة لتبدأ الصورة الجديدة بالترتيب 0
         const batch = writeBatch(db);
