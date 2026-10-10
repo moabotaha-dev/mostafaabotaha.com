@@ -1060,9 +1060,20 @@ const q = collection(db, "press_articles");
 
     const activeLang = localStorage.getItem('site_lang') || 'en';
 
+    // تجميع كل الأخبار وترتيبها برمجياً
+    const articles = [];
     snapshot.forEach((doc) => {
-      const d = doc.data();
+      articles.push({ id: doc.id, ...doc.data() });
+    });
 
+    // ترتيب من الأحدث للأقدم بأمان
+    articles.sort((a, b) => {
+      const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt).getTime()) : 0;
+      const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt).getTime()) : 0;
+      return timeB - timeA;
+    });
+
+    articles.forEach((d) => {
       const card = document.createElement('div');
       card.className = 'press-card';
       card.setAttribute('data-source', d.source || 'News');
