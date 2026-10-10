@@ -1045,8 +1045,7 @@ window.initialArticles = [];
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const q = query(collection(db, "press_articles"), orderBy("createdAt", "desc"));
-
+const q = collection(db, "press_articles");
   onSnapshot(q, (snapshot) => {
     const track = document.getElementById('marqueeTrack');
     if (!track) return;
